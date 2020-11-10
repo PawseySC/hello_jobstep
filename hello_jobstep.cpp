@@ -98,8 +98,8 @@ int main(int argc, char *argv[]){
 			thread_id = omp_get_thread_num();
 			hwthread = sched_getcpu();
 
-            std::cout << "MPI " << rank << " - OMP " << thread_id << " - HWT " 
-                      << hwthread << " - Node " << name << " - RT_GPU_ID " << rt_gpu_id_list 
+            std::cout << "MPI " << rank << " - OMP " << thread_id << " - HWT " << hwthread 
+                      << " - Node " << name << " - RT_GPU_ID " << rt_gpu_id_list 
                       << " - GPU_ID " << gpu_id_list << " - Bus_ID " << busid_list << std::endl;
             }
 		}
