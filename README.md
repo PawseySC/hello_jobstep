@@ -12,4 +12,4 @@ To run, simply launch the executable with your favorite job launcher.
 
 > NOTE: `HIP_VISIBLE_DEVICES` must be set.
 
-> NOTE: On Lyra, the current Slurm doesn't easily allow for fine-grained process/thread placement so an example mapping script is also included in this repo. It can be modifed and called "in front of" `hello_jobstep` (or any other executable really). The script uses `numactl` to map hardware threads and GPUs to node-local MPI ranks.
+> [OPTIONAL]: On Lyra, the current Slurm doesn't easily allow for fine-grained process/thread placement so an example mapping script is also included in this repo. It can be modifed and called "in front of" `hello_jobstep` (or any other executable really). The script uses `numactl` to map hardware threads and GPUs to node-local MPI ranks. NOTE: You will need to use the `srun` argument `--ntasks_per_gpu` with this script.
