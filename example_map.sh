@@ -1,28 +1,41 @@
 #!/bin/bash
 
 #------------------------------------------------------
-# You'll need to read in more command line args if your
-# executable takes arguments
+# Set the executable name from the first command line 
+# argument to this script
+#
+# NOTE: You'll need to read in more command line args 
+# if your executable takes arguments
 #------------------------------------------------------
 APP=$1
 
 #------------------------------------------------------
-# The number of node-local MPI ranks
-# The `--ntasks_per_node` flag to srun should be used
+# Set the number of node-local MPI ranks
+#
+# NOTE: The `--ntasks-per-node` flag to srun must be 
+# used to set SLURM_NTASKS_PER_NODE.
 #------------------------------------------------------
 lrank=$(($SLURM_PROCID % $SLURM_NTASKS_PER_NODE))
 
 #------------------------------------------------------
-# Ideally, the number of hardware threads set below
-# for each rank with numactl should be the same as
-# OMP_NUM_THREADS
+# OpenMP environment variables
+#
+# NOTE: If you change the number of OpenMP threads, 
+# you will also need to change the --physcpubind
+# values below. The values given are hardware thread
+# IDs, so if you want 1 OpenMP thread per physical
+# core, look at the Lyra node diagram and make sure 
+# to use only 1 hw thread per physical core for each 
+# comma-separated value.
 #------------------------------------------------------
 export OMP_NUM_THREADS=4
 export OMP_PLACES=cores
 
 #------------------------------------------------------
-# Set hardware threads and GPUs for each node-local
-# MPI rank. NOTE: For more than 4 MPI ranks per node, 
+# Set hardware thread IDs and GPUs for each node-local
+# MPI rank. 
+#
+# NOTE: For more than 4 MPI ranks per node, 
 # additional cases would need to be added.
 #------------------------------------------------------
 case ${lrank} in

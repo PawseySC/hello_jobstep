@@ -10,6 +10,7 @@ Written by Tom Papatheodore
 #include <stdio.h>
 #include <iostream>
 #include <iomanip>
+#include <iomanip>
 #include <string.h>
 #include <mpi.h>
 #include <sched.h>
@@ -98,9 +99,13 @@ int main(int argc, char *argv[]){
 			thread_id = omp_get_thread_num();
 			hwthread = sched_getcpu();
 
-            std::cout << "MPI " << rank << " - OMP " << thread_id << " - HWT " << hwthread 
-                      << " - Node " << name << " - RT_GPU_ID " << rt_gpu_id_list 
-                      << " - GPU_ID " << gpu_id_list << " - Bus_ID " << busid_list << std::endl;
+            std::cout << "MPI "    << std::setw(3) << rank 
+                      << " - OMP " << std::setw(3) << thread_id 
+                      << " - HWT " << std::setw(3) << hwthread 
+                      << " - Node " << name 
+                      << " - RT_GPU_ID " << rt_gpu_id_list 
+                      << " - GPU_ID " << gpu_id_list 
+                      << " - Bus_ID " << busid_list << std::endl;
             }
 		}
 	}
