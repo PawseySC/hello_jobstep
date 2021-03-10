@@ -41,20 +41,15 @@ int main(int argc, char *argv[]){
 	int resultlength;
 	MPI_Get_processor_name(name, &resultlength);
 
-    const char* gpu_id_list = getenv("HIP_VISIBLE_DEVICES");
+    // Find how many GPUs are set in environment variable
+    const char* gpu_id_list = getenv("ROCR_VISIBLE_DEVICES");
 
 	// Find how many GPUs HIP runtime says are available
 	int num_devices = 0;
     hipErrorCheck( hipGetDeviceCount(&num_devices) );
 
 	int hwthread;
-	int num_threads = 0;
 	int thread_id = 0;
-
-	#pragma omp parallel default(shared)
-	{
-		num_threads = omp_get_num_threads();
-	}
 
 	if(num_devices == 0){
 		#pragma omp parallel default(shared) private(hwthread, thread_id)
@@ -81,7 +76,7 @@ int main(int argc, char *argv[]){
 			// Get the PCIBusId for each GPU and use it to query for UUID
 			hipErrorCheck( hipDeviceGetPCIBusId(busid, 64, i) );
 
-			// Concatenate per-MPIrank GPU info into strings for printf
+			// Concatenate per-MPIrank GPU info into strings for print
             if(i > 0) rt_gpu_id_list.append(",");
             rt_gpu_id_list.append(std::to_string(i));
 
@@ -99,13 +94,13 @@ int main(int argc, char *argv[]){
 			thread_id = omp_get_thread_num();
 			hwthread = sched_getcpu();
 
-            std::cout << "MPI "    << std::setw(3) << rank 
-                      << " - OMP " << std::setw(3) << thread_id 
-                      << " - HWT " << std::setw(3) << hwthread 
-                      << " - Node " << name 
+            std::cout << "MPI "          << std::setw(3)   << rank 
+                      << " - OMP "       << std::setw(3)   << thread_id 
+                      << " - HWT "       << std::setw(3)   << hwthread 
+                      << " - Node "      << name 
                       << " - RT_GPU_ID " << rt_gpu_id_list 
-                      << " - GPU_ID " << gpu_id_list 
-                      << " - Bus_ID " << busid_list << std::endl;
+                      << " - GPU_ID "    << gpu_id_list 
+                      << " - Bus_ID "    << busid_list     << std::endl;
             }
 		}
 	}
