@@ -12,9 +12,36 @@ To compile, you'll need to have HIP and MPI installed, and you'll need to use an
 
 * CC + CrayMPI
 
+> NOTE: When using Cray's MPI, you must set `export MV2_ENABLE_AFFINITY=0` to properly use Slurm's binding flags. Otherwise, the Cray MPI binding will take precedence and might give unexpected/undesired results.
+
 ## Usage
 
-To run, simply launch the executable with your favorite job launcher. 
+To run, simply launch the executable with your favorite job launcher. For example...
+
+> NOTE: Since there are 4 OpenMP threads per MPI rank, I've included `-c 8` to make sure each MPI rank has 4 physical CPU cores to spawn the 4 OpenMP threads on. The `-c` option counts hardware threads, not physical CPU cores (there are 2 hardware threads per physical core).
+
+```
+$ export OMP_NUM_THREADS=4
+$ srun -p mi100 -A stf016 -t 10 -N 2 -n 4 -c 8 --cpu-bind=cores --gpus-per-node=4 ./hello_jobstep | sort
+MPI   0 - OMP   0 - HWT 195 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   0 - OMP   1 - HWT  66 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   0 - OMP   2 - HWT  65 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   0 - OMP   3 - HWT  64 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   1 - OMP   0 - HWT 199 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   1 - OMP   1 - HWT  70 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   1 - OMP   2 - HWT  69 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   1 - OMP   3 - HWT  68 - Node lyra16 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   2 - OMP   0 - HWT 195 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   2 - OMP   1 - HWT  66 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   2 - OMP   2 - HWT  65 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   2 - OMP   3 - HWT  64 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   3 - OMP   0 - HWT 211 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   3 - OMP   1 - HWT 208 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   3 - OMP   2 - HWT  81 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+MPI   3 - OMP   3 - HWT  80 - Node lyra17 - RT_GPU_ID 0,1,2,3 - GPU_ID 0,1,2,3 - Bus_ID c3,c6,a3,83
+```
+
+### Additional Notes
 
 > NOTE: If the output comes out garbled, you likely don't have `ROCR_VISIBLE_DEVICES` set. This can be set manually before running, or set implicitly with the `--gpus-per-node` flag or `--ntasks-per-gpu` flag (although the latter is currently broken). It is always recommended to add a `| sort` at the end of the job step line for easier parsing (see some examples below).
 
