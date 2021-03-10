@@ -8,9 +8,9 @@ To compile, you'll need to have HIP and MPI installed, and you'll need to use an
 
 ### Included MPI + Compiler + HIP Combinations
 
-<b>hipcc + OpenMPI</b>
+* hipcc + OpenMPI
 
-<b>CC + CrayMPI</b>
+* CC + CrayMPI
 
 ## Usage
 
