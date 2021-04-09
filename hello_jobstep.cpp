@@ -1,9 +1,7 @@
 /**********************************************************
-
 "Hello World"-type program to test different srun layouts.
 
 Written by Tom Papatheodore
-
 **********************************************************/
 
 #include <stdlib.h>
@@ -41,8 +39,15 @@ int main(int argc, char *argv[]){
 	int resultlength;
 	MPI_Get_processor_name(name, &resultlength);
 
-    // Find how many GPUs are set in environment variable
-    const char* gpu_id_list = getenv("ROCR_VISIBLE_DEVICES");
+    // If ROCR_VISIBLE_DEVICES is set, capture visible GPUs
+    const char* gpu_id_list; 
+    const char* rocr_visible_devices = getenv("ROCR_VISIBLE_DEVICES");
+    if(rocr_visible_devices == NULL){
+        gpu_id_list = "N/A";
+    }
+    else{
+        gpu_id_list = rocr_visible_devices;
+    }
 
 	// Find how many GPUs HIP runtime says are available
 	int num_devices = 0;
