@@ -62,8 +62,9 @@ int main(int argc, char *argv[]){
 			thread_id = omp_get_thread_num();
 			hwthread = sched_getcpu();
 
-            std::cout << "MPI " << rank << " - OMP " << thread_id << " - HWT "
-                      << hwthread << " - Node " << name << std::endl;
+            printf("MPI %03d - OMP %03d - HWT %03d - Node %s\n", 
+                    rank, thread_id, hwthread, name);
+
 		}
 	}
 	else{
@@ -99,14 +100,9 @@ int main(int argc, char *argv[]){
 			thread_id = omp_get_thread_num();
 			hwthread = sched_getcpu();
 
-            std::cout << "MPI "          << std::setw(3)   << rank 
-                      << " - OMP "       << std::setw(3)   << thread_id 
-                      << " - HWT "       << std::setw(3)   << hwthread 
-                      << " - Node "      << name 
-                      << " - RT_GPU_ID " << rt_gpu_id_list 
-                      << " - GPU_ID "    << gpu_id_list 
-                      << " - Bus_ID "    << busid_list     << std::endl;
-            }
+            printf("MPI %03d - OMP %03d - HWT %03d - Node %s - RT_GPU_ID %s - GPU_ID %s - Bus_ID %s\n",
+                    rank, thread_id, hwthread, name, rt_gpu_id_list.c_str(), gpu_id_list, busid_list.c_str());
+           }
 		}
 	}
 
