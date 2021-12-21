@@ -1,14 +1,37 @@
-COMP  = CC
-FLAGS = -std=c++11 -fopenmp -D__HIP_PLATFORM_HCC__ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX908__=1
+COMP   = CC
 
-INCLUDES  = -I$(HIP_PATH)/include
-LIBRARIES = -L$(HIP_PATH)/lib -lamdhip64
+CFLAGS = -std=c++11 -fopenmp --rocm-path=${ROCM_PATH} -x hip
+
+# Compile for specific systems
+ifeq ($(LMOD_SYSTEM_NAME),spock)
+    CFLAGS += -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
+    $(info $(LMOD_SYSTEM_NAME))
+else ifeq ($(LMOD_SYSTEM_NAME),bones)
+    CFLAGS += -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
+    $(info $(LMOD_SYSTEM_NAME))
+else ifeq ($(LMOD_SYSTEM_NAME),borg)
+    CFLAGS += -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    $(info $(LMOD_SYSTEM_NAME))
+else ifeq ($(LMOD_SYSTEM_NAME),crusher)
+    CFLAGS += -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    $(info $(LMOD_SYSTEM_NAME))
+else ifeq ($(LMOD_SYSTEM_NAME),frontier)
+    CFLAGS += -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    $(info $(LMOD_SYSTEM_NAME))
+else
+    $(error $(LMOD_SYSTEM_NAME) not a recognized system. Exiting...)
+endif
+
+LFLAGS = -fopenmp --rocm-path=${ROCM_PATH}
+
+INCLUDES  = -I${ROCM_PATH}/include
+LIBRARIES = -L${ROCM_PATH}/lib -lamdhip64
 
 hello_jobstep: hello_jobstep.o
-	$(COMP) $(FLAGS) $(LIBRARIES) hello_jobstep.o -o hello_jobstep
+	${COMP} ${LFLAGS} ${LIBRARIES} hello_jobstep.o -o hello_jobstep
 
 hello_jobstep.o: hello_jobstep.cpp
-	$(COMP) $(FLAGS) $(INCLUDES) -c hello_jobstep.cpp
+	${COMP} ${CFLAGS} ${INCLUDES} -c hello_jobstep.cpp
 
 .PHONY: clean
 
