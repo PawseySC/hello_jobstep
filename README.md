@@ -2,6 +2,8 @@
 
 For each job step launched with srun, this program prints the hardware thread IDs that each MPI rank and OpenMP thread runs on, and the GPU IDs that each rank/thread has access to.
 
+(Code has been adapted for Pawsey Supercomputing Centre purposes and documentation, but original code and repository come from ORNL [documentation for Crusher Supercomputer] (https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html))
+
 ## Compiling
 
 To compile, you'll need to have HIP and MPI installed, and you'll need to use an OpenMP-capable compiler. Modify the Makefile accordingly.
@@ -41,4 +43,4 @@ The different GPU IDs reported by the example program are:
 * `RT_GPU_ID` is the HIP runtime GPU ID (as reported from, say `hipGetDevice`).
 * `Bus_ID` is the physical bus ID associated with the GPUs. Comparing the bus IDs is meant to definitively show that different GPUs are being used.
 
-> NOTE: Although the two GPU IDs (`GPU_ID` and `RT_GPU_ID`) are the same in the example above, they do not have to be. See the Spock Quick-Start Guide for such examples.
+> NOTE: Although the two GPU IDs (`GPU_ID` and `RT_GPU_ID`) are the same in the example above, they do not have to be. See Documented Guides for intended cluster for such examples.

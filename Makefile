@@ -2,24 +2,39 @@ COMP   = CC
 
 CFLAGS = -std=c++11 -fopenmp --rocm-path=${ROCM_PATH} -x hip
 
-# Compile for specific systems
+# Compile for specific systems in ORNL
 ifeq ($(LMOD_SYSTEM_NAME),spock)
-    CFLAGS += -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
+    CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
     $(info $(LMOD_SYSTEM_NAME))
 else ifeq ($(LMOD_SYSTEM_NAME),bones)
-    CFLAGS += -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
+    CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
     $(info $(LMOD_SYSTEM_NAME))
 else ifeq ($(LMOD_SYSTEM_NAME),borg)
-    CFLAGS += -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
     $(info $(LMOD_SYSTEM_NAME))
 else ifeq ($(LMOD_SYSTEM_NAME),crusher)
-    CFLAGS += -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
     $(info $(LMOD_SYSTEM_NAME))
 else ifeq ($(LMOD_SYSTEM_NAME),frontier)
-    CFLAGS += -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
     $(info $(LMOD_SYSTEM_NAME))
+endif
+# Compile for specific systems in Pawsey
+ifeq ($(PAWSEY_CLUSTER),mulan)
+    CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
+    $(info $(PAWSEY_CLUSTER))
+else ifeq ($(PAWSEY_CLUSTER),joey)
+    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    $(info $(PAWSEY_CLUSTER))
+else ifeq ($(PAWSEY_CLUSTER),setonix)
+    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+    $(info $(PAWSEY_CLUSTER))
+endif
+# Add flags or throw error if cluster has not been identified
+ifndef CFLAGSADD
+	$(error Not LMOD_SYSTEM_NAME=$(LMOD_SYSTEM_NAME) nor PAWSEY_CLUSTER=$(PAWSEY_CLUSTER) were recognized systems. Exiting...)
 else
-    $(error $(LMOD_SYSTEM_NAME) not a recognized system. Exiting...)
+    CFLAGS += $(CFLAGSADD)
 endif
 
 LFLAGS = -fopenmp --rocm-path=${ROCM_PATH}
