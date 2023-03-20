@@ -2,37 +2,30 @@ COMP   = CC
 
 CFLAGS = -std=c++11 -fopenmp --rocm-path=${ROCM_PATH} -x hip
 
-# Compile for specific systems in ORNL
-ifeq ($(LMOD_SYSTEM_NAME),spock)
-    CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
-    $(info $(LMOD_SYSTEM_NAME))
-else ifeq ($(LMOD_SYSTEM_NAME),bones)
-    CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
-    $(info $(LMOD_SYSTEM_NAME))
-else ifeq ($(LMOD_SYSTEM_NAME),borg)
-    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
-    $(info $(LMOD_SYSTEM_NAME))
-else ifeq ($(LMOD_SYSTEM_NAME),crusher)
-    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
-    $(info $(LMOD_SYSTEM_NAME))
-else ifeq ($(LMOD_SYSTEM_NAME),frontier)
-    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
-    $(info $(LMOD_SYSTEM_NAME))
-endif
-# Compile for specific systems in Pawsey
-ifeq ($(PAWSEY_CLUSTER),mulan)
-    CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
-    $(info $(PAWSEY_CLUSTER))
-else ifeq ($(PAWSEY_CLUSTER),joey)
-    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
-    $(info $(PAWSEY_CLUSTER))
-else ifeq ($(PAWSEY_CLUSTER),setonix)
-    CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
-    $(info $(PAWSEY_CLUSTER))
-endif
+#------
+#=== Compile for specific systems in ORNL
+#-- For spock, bones. Use:
+#CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
+#-- For borg,crusher,frontier. Use:
+#CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+
+#=== Compile for specific systems in Pawsey
+#-- For mulan. Use:
+#CFLAGSADD = -D__HIP_ARCH_GFX908__=1 --offload-arch=gfx908
+#-- For joey,setonix. Use:
+CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+
+#=== Compile for specific systems in CSC
+#-- For Lumi. Use:
+#CFLAGSADD = -D__HIP_ARCH_GFX90A__=1 --offload-arch=gfx90a
+
+#=== Compile for testing
+#-- For Testing. Use:
+#CFLAGSADD =
+
 # Add flags or throw error if cluster has not been identified
 ifndef CFLAGSADD
-	$(error Not LMOD_SYSTEM_NAME=$(LMOD_SYSTEM_NAME) nor PAWSEY_CLUSTER=$(PAWSEY_CLUSTER) were recognized systems. Exiting...)
+	$(error Please set CFLAGSADD for the compilation host)
 else
     CFLAGS += $(CFLAGSADD)
 endif
