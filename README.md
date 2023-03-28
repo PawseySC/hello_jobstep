@@ -8,9 +8,10 @@ For each job step launched with srun, this program prints the hardware thread ID
 
 To compile, you'll need to have HIP and MPI installed, and you'll need to use an OpenMP-capable compiler. Modify the Makefile accordingly.
 
-### Included Compiler + MPI + HIP Combinations
+### Currently working Compiler + MPI + HIP Combinations
 
-* CC + CrayMPI
+* CC (c++ Cray Compiler) + CrayMP
+**  Modules needed compilation on Setonix: PrgEnv-cray,cray-mpich,rocm
 
 ## Usage
 
