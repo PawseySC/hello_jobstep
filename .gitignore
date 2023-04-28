@@ -1,3 +1,5 @@
 *.o
 hello_jobstep
+hello_nompi
 *.swp
+*.sh

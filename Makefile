@@ -41,7 +41,13 @@ hello_jobstep: hello_jobstep.o
 hello_jobstep.o: hello_jobstep.cpp
 	${COMP} ${CFLAGS} ${INCLUDES} -c hello_jobstep.cpp
 
+hello_nompi: hello_nompi.o
+	${COMP} ${LFLAGS} ${LIBRARIES} hello_nompi.o -o hello_nompi
+
+hello_nompi.o: hello_nompi.cpp
+	${COMP} ${CFLAGS} ${INCLUDES} -c hello_nompi.cpp
+
 .PHONY: clean
 
 clean:
-	rm -f hello_jobstep *.o
+	rm -f hello_jobstep hello_nompi *.o

@@ -1,7 +1,10 @@
 /**********************************************************
 "Hello World"-type program to test different srun layouts.
 
-Written by Tom Papatheodore
+Original Written by Tom Papatheodore
+Adapted to remove MPI by Alexis Espinosa:
+Note: MPI has been removed but NOT all informative comments
+      in relation to MPI &  MPI-ranks were updated
 **********************************************************/
 
 #include <stdlib.h>
@@ -10,10 +13,11 @@ Written by Tom Papatheodore
 #include <iomanip>
 #include <iomanip>
 #include <string.h>
-#include <mpi.h>
+//#include <mpi.h>
 #include <sched.h>
 #include <hip/hip_runtime.h>
 #include <omp.h>
+#include <unistd.h> //To use gethostname
 
 // Macro for checking errors in HIP API calls
 #define hipErrorCheck(call)                                                                 \
@@ -27,17 +31,19 @@ do{                                                                             
 
 int main(int argc, char *argv[]){
 
-	MPI_Init(&argc, &argv);
+	//MPI_Init(&argc, &argv);
 
-	int size;
-	MPI_Comm_size(MPI_COMM_WORLD, &size);
+	int size=1;
+	//MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	int rank;
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	int rank=0;
+	//MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-	char name[MPI_MAX_PROCESSOR_NAME];
+	//char name[MPI_MAX_PROCESSOR_NAME];
+	char name[HOST_NAME_MAX];
 	int resultlength;
-	MPI_Get_processor_name(name, &resultlength);
+	//MPI_Get_processor_name(name, &resultlength);
+        resultlength = gethostname(name, HOST_NAME_MAX);	
 
     // If ROCR_VISIBLE_DEVICES is set, capture visible GPUs
     const char* gpu_id_list; 
@@ -51,7 +57,7 @@ int main(int argc, char *argv[]){
 
 	// Find how many GPUs HIP runtime says are available
 	int num_devices = 0;
-        hipErrorCheck( hipGetDeviceCount(&num_devices) );
+    hipErrorCheck( hipGetDeviceCount(&num_devices) );
 
 	int hwthread;
 	int thread_id = 0;
@@ -62,7 +68,8 @@ int main(int argc, char *argv[]){
 			thread_id = omp_get_thread_num();
 			hwthread = sched_getcpu();
 
-            printf("MPI %03d - OMP %03d - HWT %03d - Node %s\n", 
+            //printf("MPI %03d - OMP %03d - HWT %03d - Node %s\n", 
+            printf("MAIN %03d - OMP %03d - HWT %03d - Node %s\n", 
                     rank, thread_id, hwthread, name);
 
 		}
@@ -74,7 +81,7 @@ int main(int argc, char *argv[]){
         std::string busid_list = "";
         std::string rt_gpu_id_list = "";
 
-		// Loop over the GPUs available to each MPI rank
+		// Loop over the GPUs available to each rank
 		for(int i=0; i<num_devices; i++){
 
 			hipErrorCheck( hipSetDevice(i) );
@@ -100,13 +107,14 @@ int main(int argc, char *argv[]){
 			thread_id = omp_get_thread_num();
 			hwthread = sched_getcpu();
 
-            printf("MPI %03d - OMP %03d - HWT %03d - Node %s - RT_GPU_ID %s - GPU_ID %s - Bus_ID %s\n",
+            //printf("MPI %03d - OMP %03d - HWT %03d - Node %s - RT_GPU_ID %s - GPU_ID %s - Bus_ID %s\n",
+            printf("MAIN %03d - OMP %03d - HWT %03d - Node %s - RT_GPU_ID %s - GPU_ID %s - Bus_ID %s\n",
                     rank, thread_id, hwthread, name, rt_gpu_id_list.c_str(), gpu_id_list, busid_list.c_str());
            }
 		}
 	}
 
-	MPI_Finalize();
+	//MPI_Finalize();
 
 	return 0;
 }
