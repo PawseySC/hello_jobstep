@@ -10,8 +10,9 @@ To compile, you'll need to have HIP and MPI installed, and you'll need to use an
 
 ### Currently working Compiler + MPI + HIP Combinations
 
-* CC (c++ Cray Compiler) + CrayMP
-**  Modules needed compilation on Setonix: PrgEnv-cray,cray-mpich,rocm,craype-accel-amd-gfx90a
+- CC (c++ Cray Compiler) + CrayMPICH
+	- Modules needed for compilation on Setonix:
+		`module load PrgEnv-cray rocm craype-accel-amd-gfx90a`
 
 ## Usage
 
