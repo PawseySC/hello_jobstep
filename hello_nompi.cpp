@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
 			hwthread = sched_getcpu();
 
             //printf("MPI %03d - OMP %03d - HWT %03d - Node %s - RT_GPU_ID %s - GPU_ID %s - Bus_ID %s\n",
-            printf("MAIN %03d - OMP %03d - HWT %03d - Node %s - RT_GPU_ID %s - GPU_ID %s - Bus_ID %s\n",
+            printf("MAIN %03d - OMP %03d - HWT %03d - Node %s - RunTime_GPU_ID %s - ROCR_VISIBLE_GPU_ID %s - GPU_Bus_ID %s\n",
                     rank, thread_id, hwthread, name, rt_gpu_id_list.c_str(), gpu_id_list, busid_list.c_str());
            }
 		}
